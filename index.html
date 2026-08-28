@@ -118,7 +118,7 @@
         .chatInputRow input { flex: 1; height: 38px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.25); border-radius: 8px; padding: 0 12px; color: #fff; font-size: 12px; outline: none; }
         .chatInputRow button { width: 65px; height: 38px; background: #ff4f9a; border: none; border-radius: 8px; color: #fff; font-weight: bold; font-size: 12px; cursor: pointer; }
 
-        /* SHOP & CHART - LÀM TRONG SUỐT XUYÊN THẤU NỀN HƠN NỮA */
+        /* SHOP & CHART - TRONG SUỐT XUYÊN THẤU NỀN */
         #shopModal {
             background: rgba(8, 8, 14, 0.45) !important;
             border: 1px solid rgba(52, 211, 153, 0.35);
@@ -288,7 +288,7 @@
                 <div class="orderFormTitle">📦 Tạo Đơn Mua Thẻ Mới (Tối thiểu 20.000đ)</div>
                 <div class="formRow"><input type="text" id="orderTimeInput" placeholder="Ngày (VD: Ngày 1, Ngày 2)..."></div>
                 <div class="formRow">
-                    <input type="number" id="orderAmountInput" placeholder="Số tiền (VNĐ)..." min="20000">
+                    <input type="text" id="orderAmountInput" placeholder="Số tiền (VD: 20.000)..." oninput="formatCurrencyInput(this)">
                     <button class="submitOrderBtn" onclick="submitOrder()">Gửi Đơn</button>
                 </div>
             </div>
@@ -360,6 +360,15 @@
         function formatMoney(num) {
             if (isNaN(num)) return "0đ";
             return Number(num).toLocaleString('vi-VN') + "đ";
+        }
+
+        function formatCurrencyInput(input) {
+            let value = input.value.replace(/\D/g, "");
+            if (value === "") {
+                input.value = "";
+                return;
+            }
+            input.value = Number(value).toLocaleString('vi-VN');
         }
 
         function showCustomAlert(title, message) {
@@ -723,7 +732,9 @@
 
         function submitOrder() {
             let time = document.getElementById("orderTimeInput").value.trim();
-            let amount = parseFloat(document.getElementById("orderAmountInput").value);
+            let rawAmountStr = document.getElementById("orderAmountInput").value.replace(/\./g, "");
+            let amount = parseFloat(rawAmountStr);
+
             if(!time || isNaN(amount)) { showCustomAlert("Lỗi", "Nhập đủ thông tin đơn hàng!"); return; }
             if(amount < 20000) { showCustomAlert("Lỗi số tiền", "Số tiền mua thẻ thấp nhất phải từ 20.000đ trở lên mới được tính!"); return; }
             
