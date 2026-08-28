@@ -290,24 +290,631 @@
         </div>
     </div>
 
-    <!-- KHUNG TẢI DELTA MỚI NHẤT ĐÃ ĐƯỢC THÊM VÀO DƯỚI ĐÂY -->
-    <div style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 250; text-align: center;">
-        <a id="btnDownloadDelta" href="https://drive.google.com/file/d/1wIivccguMSngh4Q0g7hI4fCy_lLCl2DL/view?usp=sharing" target="_blank" class="robloxButton" style="padding: 12px 24px; font-size: 14px; text-decoration: none; display: inline-block;">
-            📥 Nhấn vào đây để tải bản Delta mới nhất
-        </a>
-    </div>
-
     <div id="scriptHubModal" class="modalBox">
         <div class="modalHeader">
-            <span>⚡ VIP Script Hub </span>
+            <span>⚡ VIP Script Hub Đỉnh Cao</span>
             <button class="closeModal" onclick="closeModal('scriptHubModal')">×</button>
         </div>
         <div class="scriptHubContainer">
             <div class="script-hub-top-banner">
-                <div class="script-hub-banner-title"></div>
+                <div class="script-hub-banner-title">⚡ VUSCRIPT HUB ⚡</div>
+                <div class="script-hub-banner-desc">Chọn tựa game yêu thích và nhận mã loadstring tối ưu nhất!</div>
+            </div>
+            <div class="game-list">
+                <button class="game-btn active" onclick="selectGame('Blox Fruit', this)">🏴‍☠️ Blox Fruit</button>
+                <button class="game-btn" onclick="selectGame('The Strongest Battlegrounds', this)">⚔️ The Strongest TSB</button>
+                <button class="game-btn" onclick="selectGame('99 Nights in the Forest', this)">🌲 99 Nights in Forest</button>
+                <button class="game-btn" onclick="selectGame('Game Khác', this)">🎮 Game Khác</button>
+            </div>
+            <div class="section-title" id="currentCategory">Danh sách Script: Blox Fruit</div>
+            <div id="scriptContainer"></div>
+            <div class="contrib-box">
+                <h3>➕ Đóng góp Script</h3>
+                <input type="text" id="contribName" class="input-field-hub" placeholder="Tên script...">
+                <textarea id="contribCode" class="input-field-hub" placeholder="Dán mã loadstring(...) vào đây..."></textarea>
+                <button class="submit-btn-hub" onclick="submitScript()">Gửi Script Lên Hub</button>
             </div>
         </div>
     </div>
 
+    <div id="callModal" class="modalBox">
+        <div class="modalHeader">
+            <span>📞 Phòng Gọi Thoại Trực Tiếp</span>
+            <button class="closeModal" onclick="endCall()">×</button>
+        </div>
+        <div class="callScreenBody">
+            <div class="callAvatarPulse">🎙️</div>
+            <div id="callStatusText" style="font-size: 13px; color: #cbd5e1;">Đang kết nối âm thanh ngang hàng...</div>
+            <audio id="remoteAudio" autoplay playsinline></audio>
+            <div class="callActionButtons">
+                <button class="callBtn btnMute" onclick="toggleMute()" id="muteBtn">Tắt Mic</button>
+                <button class="callBtn btnEndCall" onclick="endCall()">Rời Cuộc Gọi</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="shopModal" class="modalBox">
+        <div class="modalHeader">
+            <span>💳 Kho Mua Thẻ & Biểu Đồ Chi Tiêu</span>
+            <button class="closeModal" onclick="closeModal('shopModal')">×</button>
+        </div>
+        <div class="shopContainer">
+            <div class="chartBox"><canvas id="spendingChart"></canvas></div>
+            <div class="orderFormBox">
+                <div class="orderFormTitle">📦 Tạo Đơn Mua Thẻ Mới (Tối thiểu 20.000đ)</div>
+                <div class="formRow"><input type="text" id="orderTimeInput" placeholder="Ngày (VD: Ngày 1, Ngày 2)..."></div>
+                <div class="formRow">
+                    <input type="text" id="orderAmountInput" placeholder="Số tiền (VD: 20.000)..." oninput="formatCurrencyInput(this)">
+                    <button class="submitOrderBtn" onclick="submitOrder()">Gửi Đơn</button>
+                </div>
+            </div>
+            <div class="adminSection">
+                <div class="adminHeader">
+                    <span class="adminTitle">🔒 Quản Trị Viên</span>
+                    <div id="adminLoginArea" style="display:flex; gap:4px;">
+                        <input type="password" id="adminPassInput" placeholder="Mật khẩu..." style="height:26px; font-size:11px; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.2); border-radius:4px; color:#fff; padding:0 6px; outline:none;">
+                        <button onclick="verifyAdmin()" style="background:#ef4444; border:none; color:#fff; font-size:10px; font-weight:bold; padding:0 8px; border-radius:4px; cursor:pointer;">Vào</button>
+                    </div>
+                </div>
+                <div id="adminPanelContent" style="display:none; flex-direction:column; gap:6px;">
+                    <div style="font-size: 11px; color: #34d399; font-weight: bold;">Danh sách đơn chờ duyệt:</div>
+                    <div class="pendingList" id="pendingListContainer"><div style="font-size:11px; color:#888; text-align:center;">Chưa có đơn nào</div></div>
+                    <div style="font-size: 11px; color: #f87171; font-weight: bold; margin-top: 4px;">Danh sách đơn đã duyệt (Có thể xóa):</div>
+                    <div class="pendingList" id="approvedListContainer"><div style="font-size:11px; color:#888; text-align:center;">Chưa có đơn đã duyệt</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="customModalBox">
+        <div class="custom-modal-content">
+            <div class="custom-modal-title" id="customModalTitle">Thông báo</div>
+            <div class="custom-modal-msg" id="customModalMsg">Nội dung</div>
+            <button class="custom-modal-ok" onclick="closeCustomModal()">Đóng</button>
+        </div>
+    </div>
+
+    <div class="robloxLauncher" id="robloxLauncher">
+        <button class="robloxButton" id="btnScriptHub" onclick="openModal('scriptHubModal')">⚡ SCRIPT HUB ĐỈNH CAO</button>
+        
+        <a class="robloxButton" id="btnDownloadDelta" href="https://docs.google.com/uc?export=download&id=1wIivccguMSngh4Q0g7hI4fCy_lLCl2DL" download>📥 TẢI DELTA X 101 TẠI ĐÂY</a>
+
+        <div class="menuButtonRow">
+            <button class="menuBtn" onclick="openModal('friendModal')">👥 Bạn Bè</button>
+            <button class="menuBtn" onclick="openModal('chatModal')" style="border-color: #ff4f9a; color: #ff4f9a;">💬 Chat Nhóm</button>
+            <button class="menuBtn" onclick="openModal('callModal')">📞 Gọi</button>
+            <button class="menuBtn" onclick="openModal('shopModal')" style="border-color: #34d399; color: #34d399;">💳 Mua Thẻ</button>
+        </div>
+        <button class="robloxButton" id="btnRobloxVNG" onclick="openRobloxVNG()">👑 MỞ ROBLOX VNG</button>
+        <button class="robloxButton" onclick="openRobloxGlobal()">🌐 MỞ ROBLOX QUỐC TẾ</button>
+    </div>
+
+    <script>
+        const firebaseConfig = { databaseURL: "https://vusco-c649e-default-rtdb.firebaseio.com" };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        let currentUser = localStorage.getItem("vuscript_name");
+        let isAdminLoggedIn = false;
+        let chatHistoryForAI = [];
+
+        let peerConnection = null;
+        let localStream = null;
+        let currentCallTarget = null;
+        let isMuted = false;
+        let candidateQueue = [];
+
+        const rtcConfig = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+
+        const loadingScreen = document.getElementById("loadingScreen");
+        const nameScreen = document.getElementById("nameScreen");
+        const mainScreen = document.getElementById("mainScreen");
+        const nameInput = document.getElementById("nameInput");
+        const passInput = document.getElementById("passInput");
+
+        let scriptData = { "Blox Fruit": [], "The Strongest Battlegrounds": [], "99 Nights in the Forest": [], "Game Khác": [] };
+        let activeGame = "Blox Fruit";
+        let spendingChartInstance = null;
+
+        function formatMoney(num) {
+            if (isNaN(num)) return "0đ";
+            return Number(num).toLocaleString('vi-VN') + "đ";
+        }
+
+        function formatCurrencyInput(input) {
+            let value = input.value.replace(/\D/g, "");
+            if (value === "") {
+                input.value = "";
+                return;
+            }
+            input.value = Number(value).toLocaleString('vi-VN');
+        }
+
+        function showCustomAlert(title, message) {
+            document.getElementById('customModalTitle').innerText = title;
+            document.getElementById('customModalMsg').innerText = message;
+            document.getElementById('customModalBox').style.display = 'flex';
+        }
+        function closeCustomModal() { document.getElementById('customModalBox').style.display = 'none'; }
+
+        setTimeout(function() {
+            mainScreen.style.display = "block";
+            loadingScreen.style.opacity = "0";
+            setTimeout(function() {
+                loadingScreen.style.display = "none";
+                if (currentUser) {
+                    db.ref("users/" + currentUser).update({ status: "Online" });
+                    showLauncherScreen();
+                } else {
+                    nameScreen.style.display = "flex";
+                    setTimeout(() => { nameScreen.style.opacity = "1"; nameInput.focus(); }, 50);
+                }
+            }, 800);
+        }, 3000);
+
+        function handleAuth() {
+            const user = nameInput.value.trim();
+            const pass = passInput.value.trim();
+            if (!user || !pass) { showCustomAlert("Thiếu thông tin", "Nhập đủ tên và mật khẩu đi ông tướng!"); return; }
+
+            db.ref("users/" + user).get().then((snapshot) => {
+                if (snapshot.exists()) {
+                    if (snapshot.val().password === pass) { loginSuccess(user); }
+                    else { showCustomAlert("Sai mật khẩu", "Sai mật khẩu rồi!"); }
+                } else {
+                    db.ref("users/" + user).set({ password: pass, status: "Online" });
+                    loginSuccess(user);
+                }
+            });
+        }
+
+        function loginSuccess(user) {
+            localStorage.setItem("vuscript_name", user);
+            currentUser = user;
+            db.ref("users/" + user).update({ status: "Online" });
+            nameScreen.style.opacity = "0";
+            setTimeout(() => { nameScreen.style.display = "none"; showLauncherScreen(); }, 800);
+        }
+
+        function showLauncherScreen() {
+            const launcher = document.getElementById("robloxLauncher");
+            launcher.style.display = "flex";
+            setTimeout(() => { launcher.style.opacity = "1"; }, 50);
+
+            initRealtimeListeners();
+            initSpendingChart();
+            listenGlobalScripts();
+            listenPendingOrders();
+            listenApprovedOrders();
+            prepareMicrophone();
+        }
+
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.style.display = "flex";
+            setTimeout(() => modal.classList.add("active"), 10);
+            if(modalId === 'shopModal' && spendingChartInstance) { setTimeout(() => spendingChartInstance.update(), 200); }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.remove("active");
+            setTimeout(() => modal.style.display = "none", 300);
+        }
+
+        async function prepareMicrophone() {
+            try {
+                localStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true }, video: false });
+            } catch (err) {
+                console.log("Lỗi micro:", err);
+            }
+        }
+
+        function initRealtimeListeners() {
+            db.ref("users").on("value", (snapshot) => {
+                const listContainer = document.getElementById("friendListContainer");
+                listContainer.innerHTML = "";
+                snapshot.forEach((childSnapshot) => {
+                    const username = childSnapshot.key;
+                    if (username === currentUser) return;
+                    const userData = childSnapshot.val();
+                    const isOnline = userData.status === "Online";
+
+                    const div = document.createElement("div");
+                    div.className = "friendItem";
+                    div.innerHTML = `
+                        <span>👤 ${username}</span>
+                        <div class="friendActions">
+                            <div class="statusBadge">
+                                <span class="dot ${isOnline ? 'online' : 'offline'}"></span>
+                                <span style="color: ${isOnline ? '#22c55e' : '#9ca3af'};">${userData.status || 'Offline'}</span>
+                            </div>
+                            <button class="callUserBtn" onclick="startCall('${username}')">📞 Gọi</button>
+                            ${isAdminLoggedIn ? `<button class="deleteUserBtn" onclick="deleteUser('${username}')">Xóa</button>` : ''}
+                        </div>
+                    `;
+                    listContainer.appendChild(div);
+                });
+            });
+
+            db.ref("calls/" + currentUser).on("value", async (snapshot) => {
+                const data = snapshot.val();
+                if (!data) return;
+
+                if (data.type === "offer" && !peerConnection) {
+                    currentCallTarget = data.sender;
+                    document.getElementById("callerNameText").innerText = currentCallTarget + " đang gọi cho bạn...";
+                    document.getElementById("incomingModal").style.display = "flex";
+                }
+                else if (data.type === "answer" && peerConnection) {
+                    if (peerConnection.signalingState !== "stable") {
+                        await peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
+                        processCandidateQueue();
+                    }
+                }
+                else if (data.type === "candidate" && data.candidate) {
+                    const candidateObj = new RTCIceCandidate(data.candidate);
+                    if (peerConnection && peerConnection.remoteDescription && peerConnection.remoteDescription.type) {
+                        try { await peerConnection.addIceCandidate(candidateObj); } catch(e){}
+                    } else {
+                        candidateQueue.push(candidateObj);
+                    }
+                }
+                else if (data.type === "hangup") {
+                    endCallQuiet();
+                }
+            });
+
+            const chatList = document.getElementById("modalChatList");
+            db.ref("messages").on("value", (snapshot) => {
+                chatList.innerHTML = "";
+                chatHistoryForAI = [];
+                if (!snapshot.exists()) return;
+
+                snapshot.forEach((child) => {
+                    const id = child.key;
+                    const data = child.val();
+                    chatHistoryForAI.push({ role: "user", content: `${data.sender}: ${data.text}` });
+                    if(chatHistoryForAI.length > 25) chatHistoryForAI.shift();
+
+                    const div = document.createElement("div");
+                    div.className = "msgRow";
+                    div.innerHTML = `<div><b>${data.sender}:</b> ${data.text}</div>${isAdminLoggedIn ? `<button class="deleteMsgBtn" onclick="deleteMessage('${id}')">Xóa</button>` : ''}`;
+                    chatList.appendChild(div);
+                });
+                chatList.scrollTop = chatList.scrollHeight;
+            });
+        }
+
+        async function createPeerConnection(targetUser) {
+            if (!localStream) {
+                await prepareMicrophone();
+            }
+            peerConnection = new RTCPeerConnection(rtcConfig);
+            candidateQueue = [];
+
+            if (localStream) {
+                localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+            }
+
+            peerConnection.ontrack = (event) => {
+                const remoteAudio = document.getElementById("remoteAudio");
+                remoteAudio.srcObject = event.streams[0];
+                remoteAudio.play().catch(e => console.log("Audio play error:", e));
+                document.getElementById("callStatusText").innerText = "Đang nói chuyện trực tiếp (P2P)...";
+            };
+
+            peerConnection.onicecandidate = (event) => {
+                if (event.candidate) {
+                    db.ref("calls/" + targetUser).update({ type: "candidate", candidate: event.candidate.toJSON(), sender: currentUser });
+                }
+            };
+        }
+
+        async function processCandidateQueue() {
+            while (candidateQueue.length > 0) {
+                const candidate = candidateQueue.shift();
+                try { await peerConnection.addIceCandidate(candidate); } catch(e){}
+            }
+        }
+
+        async function startCall(targetUser) {
+            currentCallTarget = targetUser;
+            openModal('callModal');
+            document.getElementById("callStatusText").innerText = `Đang gọi cho ${targetUser}...`;
+
+            await createPeerConnection(targetUser);
+
+            const offer = await peerConnection.createOffer();
+            await peerConnection.setLocalDescription(offer);
+
+            db.ref("calls/" + targetUser).set({
+                type: "offer",
+                offer: { type: offer.type, sdp: offer.sdp },
+                sender: currentUser
+            });
+        }
+
+        async function acceptIncomingCall() {
+            document.getElementById("incomingModal").style.display = "none";
+            openModal('callModal');
+            document.getElementById("callStatusText").innerText = "Đang kết nối...";
+
+            db.ref("calls/" + currentUser).get().then(async (snapshot) => {
+                const data = snapshot.val();
+                if (!data || !data.offer) return;
+
+                currentCallTarget = data.sender;
+                await createPeerConnection(currentCallTarget);
+
+                await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
+                processCandidateQueue();
+
+                const answer = await peerConnection.createAnswer();
+                await peerConnection.setLocalDescription(answer);
+
+                db.ref("calls/" + currentCallTarget).update({
+                    type: "answer",
+                    answer: { type: answer.type, sdp: answer.sdp },
+                    sender: currentUser
+                });
+            });
+        }
+
+        function rejectIncomingCall() {
+            document.getElementById("incomingModal").style.display = "none";
+            db.ref("calls/" + currentUser).remove();
+        }
+
+        function endCall() {
+            closeModal('callModal');
+            document.getElementById("incomingModal").style.display = "none";
+
+            if (currentCallTarget) {
+                db.ref("calls/" + currentCallTarget).set({ type: "hangup", sender: currentUser });
+            }
+            endCallQuiet();
+        }
+
+        function endCallQuiet() {
+            closeModal('callModal');
+            if (peerConnection) {
+                peerConnection.close();
+                peerConnection = null;
+            }
+            db.ref("calls/" + currentUser).remove();
+            currentCallTarget = null;
+            candidateQueue = [];
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            const btn = document.getElementById("muteBtn");
+            if (localStream) {
+                localStream.getAudioTracks().forEach(track => track.enabled = !isMuted);
+            }
+            if (isMuted) {
+                btn.innerText = "Bật Mic"; btn.style.background = "#22c55e";
+                document.getElementById("callStatusText").innerText = "Bạn đã tắt mic";
+            } else {
+                btn.innerText = "Tắt Mic"; btn.style.background = "#374151";
+                document.getElementById("callStatusText").innerText = "Đang nói chuyện trực tiếp (P2P)...";
+            }
+        }
+
+        function selectGame(gameName, btnElement) {
+            activeGame = gameName;
+            document.getElementById('currentCategory').innerText = "Danh sách Script: " + gameName;
+            document.querySelectorAll('.game-btn').forEach(b => b.classList.remove('active'));
+            btnElement.classList.add('active');
+            renderScripts();
+        }
+
+        function listenGlobalScripts() {
+            db.ref("group_scripts").on("value", (snapshot) => {
+                scriptData = { "Blox Fruit": [], "The Strongest Battlegrounds": [], "99 Nights in the Forest": [], "Game Khác": [] };
+                if (snapshot.exists()) {
+                    snapshot.forEach((child) => {
+                        let s = child.val();
+                        if (scriptData[s.game]) {
+                            scriptData[s.game].push({ name: s.name + " (bởi " + s.author + ")", code: s.code });
+                        }
+                    });
+                }
+                renderScripts();
+            });
+        }
+
+        function renderScripts() {
+            let container = document.getElementById('scriptContainer');
+            if(!container) return;
+            container.innerHTML = "";
+            let list = scriptData[activeGame] || [];
+            if(list.length === 0) {
+                container.innerHTML = `<p style="color: #cbd5e1; text-align: center; font-size: 12px; padding: 10px;">Chưa có script nào.</p>`;
+                return;
+            }
+            list.forEach((item) => {
+                let card = document.createElement('div');
+                card.className = 'script-card';
+                card.innerHTML = `
+                    <div style="overflow:hidden; margin-right:8px;">
+                        <div class="script-name">${item.name}</div>
+                        <div class="script-code-text">${item.code}</div>
+                    </div>
+                    <button class="copy-btn" onclick="copyCode('${encodeURIComponent(item.code)}')">Sao chép</button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function copyCode(encodedCode) {
+            navigator.clipboard.writeText(decodeURIComponent(encodedCode)).then(() => {
+                showCustomAlert("Thành công!", "Đã sao chép mã loadstring!");
+            });
+        }
+
+        function submitScript() {
+            let nameVal = document.getElementById('contribName').value.trim() || "Script mới";
+            let codeVal = document.getElementById('contribCode').value.trim();
+            if(!codeVal || !codeVal.toLowerCase().includes("loadstring")) {
+                showCustomAlert("Lỗi", "Script phải chứa 'loadstring(...)'.");
+                return;
+            }
+            db.ref("group_scripts").push({ game: activeGame, name: nameVal, code: codeVal, author: currentUser, timestamp: Date.now() });
+            document.getElementById('contribName').value = "";
+            document.getElementById('contribCode').value = "";
+            showCustomAlert("Thành công!", "Đã đẩy script lên Hub!");
+        }
+
+        function initSpendingChart() {
+            const ctx = document.getElementById('spendingChart').getContext('2d');
+            spendingChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Ngày 1', 'Ngày 2', 'Ngày 3', 'Ngày 4'],
+                    datasets: [{ label: 'Chi tiêu (VNĐ)', data: [0,0,0,0], borderColor: '#34d399', backgroundColor: 'rgba(52, 211, 153, 0.15)', borderWidth: 2.5, fill: true, tension: 0.3 }]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    plugins: { 
+                        legend: { labels: { color: '#fff', font: { size: 10 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Chi tiêu: ' + formatMoney(context.raw);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                color: '#fff',
+                                callback: function(value) {
+                                    return value.toLocaleString('vi-VN') + 'đ';
+                                }
+                            }
+                        },
+                        x: {
+                            ticks: { color: '#fff' }
+                        }
+                    }
+                }
+            });
+            db.ref("spending_days").on("value", (snapshot) => {
+                if(snapshot.exists()) {
+                    let d = snapshot.val();
+                    spendingChartInstance.data.labels = Object.keys(d);
+                    spendingChartInstance.data.datasets[0].data = Object.values(d).map(v => v.amount);
+                    spendingChartInstance.update();
+                }
+            });
+        }
+
+        function submitOrder() {
+            let time = document.getElementById("orderTimeInput").value.trim();
+            let rawAmountStr = document.getElementById("orderAmountInput").value.replace(/\./g, "");
+            let amount = parseFloat(rawAmountStr);
+
+            if(!time || isNaN(amount)) { showCustomAlert("Lỗi", "Nhập đủ thông tin đơn hàng!"); return; }
+            if(amount < 20000) { showCustomAlert("Lỗi số tiền", "Số tiền mua thẻ thấp nhất phải từ 20.000đ trở lên mới được tính!"); return; }
+            
+            db.ref("orders").push({ user: currentUser, time: time, amount: amount, timestamp: Date.now() });
+            document.getElementById("orderTimeInput").value = "";
+            document.getElementById("orderAmountInput").value = "";
+            showCustomAlert("Thành công", "Đã gửi đơn chờ duyệt!");
+        }
+
+        function verifyAdmin() {
+            if(document.getElementById("adminPassInput").value === "vu654321*") {
+                isAdminLoggedIn = true;
+                document.getElementById("adminLoginArea").style.display = "none";
+                document.getElementById("adminPanelContent").style.display = "flex";
+                showCustomAlert("Thành công", "Đã mở khóa toàn bộ quyền quản trị viên!");
+                db.ref("users").once("value", () => initRealtimeListeners());
+            } else { showCustomAlert("Sai", "Sai mật khẩu quản trị!"); }
+        }
+
+        function listenPendingOrders() {
+            db.ref("orders").on("value", (snapshot) => {
+                let c = document.getElementById("pendingListContainer");
+                c.innerHTML = "";
+                if(!snapshot.exists()) { c.innerHTML = `<div style="font-size:11px; color:#888; text-align:center;">Chưa có đơn chờ</div>`; return; }
+                snapshot.forEach((child) => {
+                    let id = child.key; let o = child.val();
+                    c.innerHTML += `<div class="pendingCard"><div><b>${o.user}</b>: ${o.time} - <b>${formatMoney(o.amount)}</b></div><div class="adminActions"><button class="approveBtn" onclick="approveOrder('${id}', '${o.time}', ${o.amount})">Duyệt</button><button class="rejectBtn" onclick="db.ref('orders/${id}').remove()">Hủy</button></div></div>`;
+                });
+            });
+        }
+
+        function approveOrder(id, time, amount) {
+            db.ref('spending_days/' + time).set({ amount: amount }).then(() => {
+                db.ref('approved_orders/' + id).set({ time: time, amount: amount, timestamp: Date.now() });
+                db.ref('orders/' + id).remove();
+            });
+        }
+
+        function listenApprovedOrders() {
+            db.ref("approved_orders").on("value", (snapshot) => {
+                let c = document.getElementById("approvedListContainer");
+                if(!c) return;
+                c.innerHTML = "";
+                if(!snapshot.exists()) { c.innerHTML = `<div style="font-size:11px; color:#888; text-align:center;">Chưa có đơn đã duyệt</div>`; return; }
+                snapshot.forEach((child) => {
+                    let id = child.key; let o = child.val();
+                    c.innerHTML += `<div class="pendingCard"><div>${o.time} - <b>${formatMoney(o.amount)}</b></div><button class="deleteApprovedBtn" onclick="deleteApprovedOrder('${id}', '${o.time}')">Xóa</button></div>`;
+                });
+            });
+        }
+
+        function deleteApprovedOrder(id, time) {
+            if(!isAdminLoggedIn) { showCustomAlert("Cấm", "Cần đăng nhập quản trị viên!"); return; }
+            db.ref('spending_days/' + time).remove().then(() => {
+                db.ref('approved_orders/' + id).remove();
+                showCustomAlert("Đã xóa", "Đã xóa đơn và cập nhật lại biểu đồ!");
+            });
+        }
+
+        function deleteUser(username) {
+            if(!isAdminLoggedIn) { showCustomAlert("Cấm", "Cần đăng nhập quản trị viên!"); return; }
+            db.ref("users/" + username).remove().then(() => {
+                db.ref("calls/" + username).remove();
+                showCustomAlert("Thành công", `Đã xóa người dùng ${username}!`);
+            });
+        }
+
+        function deleteMessage(msgId) {
+            if(!isAdminLoggedIn) { showCustomAlert("Cấm", "Cần đăng nhập quản trị viên!"); return; }
+            db.ref("messages/" + msgId).remove();
+        }
+
+        function requestResetChat() {
+            if(!isAdminLoggedIn) { showCustomAlert("Cấm", "Cần đăng nhập quản trị viên bằng mật khẩu để reset chat!"); return; }
+            db.ref("messages").remove().then(() => {
+                showCustomAlert("Thành công", "Đã reset toàn bộ tin nhắn nhóm!");
+            });
+        }
+
+        function sendModalChat() {
+            let input = document.getElementById("modalChatInput");
+            let text = input.value.trim();
+            if(!text) return;
+            db.ref("messages").push({ sender: currentUser, text: text, time: Date.now() });
+            input.value = "";
+        }
+        function checkModalEnter(e) { if(e.key === "Enter") sendModalChat(); }
+
+        window.addEventListener("beforeunload", () => {
+            if(currentUser) {
+                db.ref("users/" + currentUser).update({ status: "Offline" });
+                db.ref("calls/" + currentUser).remove();
+            }
+        });
+
+        let openRobloxGlobal = () => { window.location.href = "roblox://"; }
+        let openRobloxVNG = () => { window.location.href = "intent://#Intent;package=com.roblox.client.vnggames;scheme=roblox;end"; }
+    </script>
 </body>
 </html>
