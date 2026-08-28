@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VUSCRIPT - WebRTC P2P Call Edition</title>
+    <title>VUSCRIPT - Ultimate Edition</title>
 
     <!-- Thư viện Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
@@ -35,14 +35,14 @@
         @keyframes rotateTwo { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
         @keyframes imagePulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
 
-        /* MÀN HÌNH ĐĂNG NHẬP */
+        /* MÀN HÌNH ĐĂNG NHẬP (Làm mờ trong suốt thấy nền) */
         #nameScreen {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.08); display: none; justify-content: center; align-items: center; z-index: 150; opacity: 0; transition: opacity 0.8s ease; backdrop-filter: blur(2px);
+            position: fixed; inset: 0; background: rgba(0,0,0,0.2); display: none; justify-content: center; align-items: center; z-index: 150; opacity: 0; transition: opacity 0.8s ease; backdrop-filter: blur(4px);
         }
-        .nameBox { width: 390px; padding: 34px; text-align: center; background: rgba(10,10,15,0.85); border: 1px solid rgba(255,255,255,0.20); border-radius: 22px; box-shadow: 0 0 35px rgba(0,0,0,0.5); }
+        .nameBox { width: 390px; padding: 34px; text-align: center; background: rgba(10,10,15,0.55); border: 1px solid rgba(255,255,255,0.25); border-radius: 22px; box-shadow: 0 0 35px rgba(0,0,0,0.4); backdrop-filter: blur(10px); }
         .nameTitle { color: #fff; font-size: 22px; font-weight: bold; margin-bottom: 8px; }
-        .nameDescription { color: rgba(255,255,255,0.7); font-size: 13px; margin-bottom: 18px; }
-        .inputField { width: 100%; height: 44px; padding: 0 16px; border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; outline: none; background: rgba(0,0,0,0.4); color: #fff; font-size: 14px; text-align: center; margin-bottom: 10px; }
+        .nameDescription { color: rgba(255,255,255,0.8); font-size: 13px; margin-bottom: 18px; }
+        .inputField { width: 100%; height: 44px; padding: 0 16px; border: 1px solid rgba(255,255,255,0.25); border-radius: 12px; outline: none; background: rgba(0,0,0,0.3); color: #fff; font-size: 14px; text-align: center; margin-bottom: 10px; }
         #enterButton { width: 100%; height: 44px; border: none; border-radius: 12px; background: #ff4f9a; color: #fff; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 5px; }
 
         /* GIAO DIỆN CHÍNH */
@@ -51,80 +51,86 @@
         }
         .menuButtonRow { display: flex; gap: 4px; }
         .menuBtn {
-            flex: 1; height: 40px; background: rgba(20, 20, 30, 0.85); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; font-size: 10px; font-weight: bold; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 2px;
+            flex: 1; height: 40px; background: rgba(20, 20, 30, 0.55); border: 1px solid rgba(255,255,255,0.25); border-radius: 8px; color: #fff; font-size: 10px; font-weight: bold; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 2px; backdrop-filter: blur(8px);
         }
         .menuBtn:hover { background: rgba(255,79,154,0.4); border-color: #ff4f9a; }
         .robloxButton {
-            width: 100%; height: 44px; border: 1px solid rgba(255,255,255,0.25); border-radius: 12px; background: rgba(15, 15, 25, 0.8); color: white; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.25s; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            width: 100%; height: 44px; border: 1px solid rgba(255,255,255,0.3); border-radius: 12px; background: rgba(15, 15, 25, 0.5); color: white; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.25s; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); backdrop-filter: blur(8px);
         }
-        .robloxButton:hover { background: rgba(255,255,255,0.2); border-color: #ff4f9a; }
-        #btnRobloxVNG { background: linear-gradient(135deg, rgba(30,30,50,0.9), rgba(60,20,40,0.9)); }
+        .robloxButton:hover { background: rgba(255,255,255,0.25); border-color: #ff4f9a; }
+        #btnRobloxVNG { background: linear-gradient(135deg, rgba(30,30,50,0.6), rgba(60,20,40,0.6)); }
 
-        /* MODAL */
+        /* MODAL CHUNG (Làm mờ xuyên thấu thấy hình nền động) */
         .modalBox {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 430px; max-height: 90vh; background: rgba(15, 15, 22, 0.96); border: 1px solid rgba(255, 79, 154, 0.45); border-radius: 18px; padding: 16px; display: none; flex-direction: column; gap: 12px; z-index: 100; box-shadow: 0 10px 40px rgba(0,0,0,0.85); backdrop-filter: blur(14px); opacity: 0; transition: 0.3s ease;
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); width: 430px; max-height: 90vh; background: rgba(12, 12, 18, 0.65); border: 1px solid rgba(255, 79, 154, 0.45); border-radius: 18px; padding: 16px; display: none; flex-direction: column; gap: 12px; z-index: 100; box-shadow: 0 10px 40px rgba(0,0,0,0.6); backdrop-filter: blur(12px); opacity: 0; transition: 0.3s ease;
         }
         .modalBox.active { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-        .modalHeader { display: flex; justify-content: space-between; align-items: center; color: #fff; font-size: 15px; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.12); padding-bottom: 8px; }
+        .modalHeader { display: flex; justify-content: space-between; align-items: center; color: #fff; font-size: 15px; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 8px; }
         .closeModal { background: none; border: none; color: #ff4f9a; font-size: 18px; cursor: pointer; font-weight: bold; }
 
         /* SCRIPT HUB STYLES */
-        #scriptHubModal { width: 410px !important; border: 2px solid rgba(56, 189, 248, 0.6); background: rgba(10, 15, 30, 0.98); }
+        #scriptHubModal { width: 410px !important; border: 2px solid rgba(56, 189, 248, 0.6); background: rgba(10, 15, 30, 0.65); backdrop-filter: blur(12px); }
         .scriptHubContainer { max-height: 440px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 2px; }
         .script-hub-top-banner { width: 100%; background: linear-gradient(135deg, rgba(2, 132, 199, 0.3), rgba(147, 51, 234, 0.3)); border: 1px solid rgba(56, 189, 248, 0.4); border-radius: 12px; padding: 14px; text-align: center; box-shadow: 0 0 20px rgba(56, 189, 248, 0.2); }
         .script-hub-banner-title { color: #38bdf8; font-size: 16px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
-        .script-hub-banner-desc { color: #94a3b8; font-size: 11px; }
+        .script-hub-banner-desc { color: #cbd5e1; font-size: 11px; }
         .game-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-        .game-btn { background: rgba(30, 41, 59, 0.8); color: white; border: 1px solid rgba(255,255,255,0.12); padding: 10px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 11px; transition: 0.25s; text-align: center; }
+        .game-btn { background: rgba(30, 41, 59, 0.6); color: white; border: 1px solid rgba(255,255,255,0.15); padding: 10px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 11px; transition: 0.25s; text-align: center; backdrop-filter: blur(4px); }
         .game-btn:hover { background: rgba(2, 132, 199, 0.5); border-color: #38bdf8; }
         .game-btn.active { background: linear-gradient(135deg, #0284c7, #2563eb); border-color: #38bdf8; }
         .section-title { font-size: 12px; margin-top: 4px; color: #38bdf8; border-left: 3px solid #38bdf8; padding-left: 8px; font-weight: bold; }
-        .script-card { background: rgba(15, 23, 42, 0.9); border-radius: 10px; padding: 10px 12px; border: 1px solid rgba(56, 189, 248, 0.2); display: flex; justify-content: space-between; align-items: center; }
+        .script-card { background: rgba(15, 23, 42, 0.6); border-radius: 10px; padding: 10px 12px; border: 1px solid rgba(56, 189, 248, 0.25); display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(4px); }
         .script-name { font-weight: bold; color: #38bdf8; font-size: 12px; margin-bottom: 3px; }
-        .script-code-text { font-family: monospace; color: #94a3b8; font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 230px; background: rgba(0,0,0,0.4); padding: 3px 6px; border-radius: 4px; }
+        .script-code-text { font-family: monospace; color: #cbd5e1; font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 230px; background: rgba(0,0,0,0.4); padding: 3px 6px; border-radius: 4px; }
         .copy-btn { background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 7px 12px; border-radius: 8px; cursor: pointer; font-size: 11px; font-weight: bold; }
-        .contrib-box { margin-top: 4px; background: rgba(17, 24, 39, 0.95); padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); display: flex; flex-direction: column; gap: 8px; }
+        .contrib-box { margin-top: 4px; background: rgba(17, 24, 39, 0.65); padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15); display: flex; flex-direction: column; gap: 8px; backdrop-filter: blur(4px); }
         .contrib-box h3 { font-size: 12px; color: #f3f4f6; font-weight: bold; }
-        .input-field-hub { width: 100%; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.15); color: white; padding: 8px 10px; border-radius: 8px; font-size: 11px; outline: none; }
+        .input-field-hub { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 8px 10px; border-radius: 8px; font-size: 11px; outline: none; }
         textarea.input-field-hub { resize: vertical; height: 50px; font-family: monospace; }
         .submit-btn-hub { width: 100%; background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; border: none; padding: 9px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 11px; }
 
         /* BẠN BÈ & GỌI */
         .friendListContainer { max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
-        .friendItem { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.04); padding: 8px 12px; border-radius: 8px; font-size: 13px; color: #fff; }
+        .friendItem { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.06); padding: 8px 12px; border-radius: 8px; font-size: 13px; color: #fff; }
         .friendActions { display: flex; gap: 6px; align-items: center; }
         .callUserBtn { background: #22c55e; border: none; color: white; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
+        .deleteUserBtn { background: #ef4444; border: none; color: white; padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; }
         .statusBadge { display: flex; align-items: center; gap: 6px; font-size: 12px; }
         .dot { width: 8px; height: 8px; border-radius: 50%; }
         .dot.online { background: #22c55e; box-shadow: 0 0 6px #22c55e; }
         .dot.offline { background: #6b7280; }
 
-        /* CHAT NHÓM */
-        .chatMessagesBox { height: 220px; background: rgba(0,0,0,0.55); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; text-align: left; }
-        .msgRow { font-size: 12px; color: #e5e7eb; background: rgba(255,255,255,0.06); padding: 8px 12px; border-radius: 8px; word-break: break-word; line-height: 1.4; }
+        /* CHÁT NHÓM */
+        .chatHeaderActions { display: flex; gap: 6px; align-items: center; }
+        .resetChatBtn { background: #ef4444; color: white; border: none; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; cursor: pointer; }
+        .chatMessagesBox { height: 220px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; text-align: left; backdrop-filter: blur(4px); }
+        .msgRow { font-size: 12px; color: #e5e7eb; background: rgba(255,255,255,0.08); padding: 8px 12px; border-radius: 8px; word-break: break-word; line-height: 1.4; display: flex; justify-content: space-between; align-items: flex-start; }
         .msgRow b { color: #ff4f9a; }
-        .msgRow.ai-msg { background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); }
+        .msgRow.ai-msg { background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.35); }
         .msgRow.ai-msg b { color: #60a5fa; }
+        .deleteMsgBtn { background: none; border: none; color: #ef4444; font-size: 12px; cursor: pointer; font-weight: bold; margin-left: 8px; display: none; }
+        .msgRow:hover .deleteMsgBtn { display: inline-block; }
         .chatInputRow { display: flex; gap: 6px; }
-        .chatInputRow input { flex: 1; height: 38px; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 0 12px; color: #fff; font-size: 12px; outline: none; }
+        .chatInputRow input { flex: 1; height: 38px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.25); border-radius: 8px; padding: 0 12px; color: #fff; font-size: 12px; outline: none; }
         .chatInputRow button { width: 65px; height: 38px; background: #ff4f9a; border: none; border-radius: 8px; color: #fff; font-weight: bold; font-size: 12px; cursor: pointer; }
 
         /* SHOP & CHART */
         .shopContainer { max-height: 420px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-        .chartBox { background: rgba(0,0,0,0.45); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 10px; position: relative; height: 180px; }
-        .orderFormBox { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+        .chartBox { background: rgba(0,0,0,0.35); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 10px; position: relative; height: 180px; backdrop-filter: blur(4px); }
+        .orderFormBox { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 8px; backdrop-filter: blur(4px); }
         .orderFormTitle { color: #34d399; font-size: 12px; font-weight: bold; }
         .formRow { display: flex; gap: 6px; }
-        .formRow input { flex: 1; height: 36px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; padding: 0 10px; font-size: 12px; outline: none; }
+        .formRow input { flex: 1; height: 36px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; padding: 0 10px; font-size: 12px; outline: none; }
         .submitOrderBtn { width: 100%; height: 36px; background: #34d399; border: none; border-radius: 8px; color: #000; font-weight: bold; font-size: 12px; cursor: pointer; }
-        .adminSection { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+        .adminSection { background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.35); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 8px; backdrop-filter: blur(4px); }
         .adminHeader { display: flex; justify-content: space-between; align-items: center; }
         .adminTitle { color: #f87171; font-size: 12px; font-weight: bold; }
         .pendingList { max-height: 120px; overflow-y: auto; display: flex; flex-direction: column; gap: 5px; }
-        .pendingCard { background: rgba(0,0,0,0.5); padding: 6px 10px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #fff; }
+        .pendingCard { background: rgba(0,0,0,0.45); padding: 6px 10px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #fff; }
         .adminActions { display: flex; gap: 4px; }
         .approveBtn { background: #22c55e; border: none; color: white; padding: 3px 8px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 10px; }
         .rejectBtn { background: #ef4444; border: none; color: white; padding: 3px 8px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 10px; }
+        .deleteApprovedBtn { background: #b91c1c; border: none; color: white; padding: 3px 6px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 10px; }
 
         /* GỌI THOẠI P2P */
         .callScreenBody { text-align: center; padding: 5px 0; display: flex; flex-direction: column; gap: 12px; align-items: center; color: #fff; }
@@ -136,16 +142,16 @@
         .btnMute { background: #374151; }
 
         /* POPUP GỌI ĐẾN */
-        #incomingModal { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 300; backdrop-filter: blur(5px); }
-        .incomingBox { width: 320px; background: rgba(20,20,30,0.95); border: 1px solid #ff4f9a; border-radius: 20px; padding: 24px; text-align: center; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 0 30px rgba(255,79,154,0.4); }
+        #incomingModal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 300; backdrop-filter: blur(5px); }
+        .incomingBox { width: 320px; background: rgba(20,20,30,0.75); border: 1px solid #ff4f9a; border-radius: 20px; padding: 24px; text-align: center; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 0 30px rgba(255,79,154,0.4); backdrop-filter: blur(12px); }
         .incomingAvatar { width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, #22c55e, #3b82f6); margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 30px; }
         .incomingButtons { display: flex; gap: 12px; justify-content: center; }
         .btnAccept { background: #22c55e; color: white; border: none; padding: 10px 20px; border-radius: 12px; font-weight: bold; cursor: pointer; }
         .btnReject { background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 12px; font-weight: bold; cursor: pointer; }
 
         /* CUSTOM ALERT */
-        #customModalBox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); justify-content: center; align-items: center; z-index: 500; backdrop-filter: blur(4px); }
-        .custom-modal-content { background: #1e293b; padding: 20px; border-radius: 14px; width: 90%; max-width: 320px; text-align: center; border: 1px solid #475569; }
+        #customModalBox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); justify-content: center; align-items: center; z-index: 500; backdrop-filter: blur(6px); }
+        .custom-modal-content { background: rgba(30, 41, 59, 0.85); padding: 20px; border-radius: 14px; width: 90%; max-width: 320px; text-align: center; border: 1px solid #475569; backdrop-filter: blur(10px); }
         .custom-modal-title { font-size: 16px; font-weight: bold; margin-bottom: 6px; color: #38bdf8; }
         .custom-modal-msg { font-size: 13px; color: #cbd5e1; margin-bottom: 14px; line-height: 1.4; }
         .custom-modal-ok { background: #0284c7; color: white; border: none; padding: 6px 18px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 12px; }
@@ -180,7 +186,7 @@
         <div class="incomingBox">
             <div class="incomingAvatar">📞</div>
             <div>
-                <div style="font-size: 14px; color: #9ca3af;">Có cuộc gọi thoại đến</div>
+                <div style="font-size: 14px; color: #cbd5e1;">Có cuộc gọi thoại đến</div>
                 <div id="callerNameText" style="font-size: 18px; font-weight: bold; color: #ff4f9a; margin-top: 4px;">Đại vương</div>
             </div>
             <div class="incomingButtons">
@@ -190,10 +196,10 @@
         </div>
     </div>
 
-    <!-- BẠN BÈ -->
+    <!-- BẠN BÈ & QUẢN TRỊ NGƯỜI DÙNG -->
     <div id="friendModal" class="modalBox">
         <div class="modalHeader">
-            <span>👥 Danh sách bạn bè & Gọi thoại P2P</span>
+            <span>👥 Danh sách bạn bè & Quản trị</span>
             <button class="closeModal" onclick="closeModal('friendModal')">×</button>
         </div>
         <div class="friendListContainer" id="friendListContainer"></div>
@@ -203,7 +209,10 @@
     <div id="chatModal" class="modalBox">
         <div class="modalHeader">
             <span>💬 Chat Nhóm Chung (AI ngầm)</span>
-            <button class="closeModal" onclick="closeModal('chatModal')">×</button>
+            <div class="chatHeaderActions">
+                <button class="resetChatBtn" onclick="requestResetChat()">Reset Chat</button>
+                <button class="closeModal" onclick="closeModal('chatModal')">×</button>
+            </div>
         </div>
         <div class="chatMessagesBox" id="modalChatList"></div>
         <div class="chatInputRow">
@@ -249,7 +258,6 @@
         <div class="callScreenBody">
             <div class="callAvatarPulse">🎙️</div>
             <div id="callStatusText" style="font-size: 13px; color: #cbd5e1;">Đang kết nối âm thanh ngang hàng...</div>
-            <!-- Thẻ audio ẩn nhận luồng âm thanh thời gian thực -->
             <audio id="remoteAudio" autoplay playsinline></audio>
             <div class="callActionButtons">
                 <button class="callBtn btnMute" onclick="toggleMute()" id="muteBtn">Tắt Mic</button>
@@ -267,10 +275,10 @@
         <div class="shopContainer">
             <div class="chartBox"><canvas id="spendingChart"></canvas></div>
             <div class="orderFormBox">
-                <div class="orderFormTitle">📦 Tạo Đơn Mua Thẻ Mới</div>
-                <div class="formRow"><input type="text" id="orderTimeInput" placeholder="Thời gian (VD: Tuần 1)..."></div>
+                <div class="orderFormTitle">📦 Tạo Đơn Mua Thẻ Mới (Tối thiểu 20.000đ)</div>
+                <div class="formRow"><input type="text" id="orderTimeInput" placeholder="Ngày (VD: Ngày 1, Ngày 2)..."></div>
                 <div class="formRow">
-                    <input type="number" id="orderAmountInput" placeholder="Số tiền (VNĐ)...">
+                    <input type="number" id="orderAmountInput" placeholder="Số tiền (VNĐ)..." min="20000">
                     <button class="submitOrderBtn" onclick="submitOrder()">Gửi Đơn</button>
                 </div>
             </div>
@@ -285,6 +293,8 @@
                 <div id="adminPanelContent" style="display:none; flex-direction:column; gap:6px;">
                     <div style="font-size: 11px; color: #34d399; font-weight: bold;">Danh sách đơn chờ duyệt:</div>
                     <div class="pendingList" id="pendingListContainer"><div style="font-size:11px; color:#888; text-align:center;">Chưa có đơn nào</div></div>
+                    <div style="font-size: 11px; color: #f87171; font-weight: bold; margin-top: 4px;">Danh sách đơn đã duyệt (Có thể xóa):</div>
+                    <div class="pendingList" id="approvedListContainer"><div style="font-size:11px; color:#888; text-align:center;">Chưa có đơn đã duyệt</div></div>
                 </div>
             </div>
         </div>
@@ -316,18 +326,16 @@
         const db = firebase.database();
 
         let currentUser = localStorage.getItem("vuscript_name");
+        let isAdminLoggedIn = false;
         let aiActive = false;
         let chatHistoryForAI = [];
 
-        // WebRTC P2P Variables
         let peerConnection = null;
         let localStream = null;
         let currentCallTarget = null;
         let isMuted = false;
 
-        const rtcConfig = {
-            iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
-        };
+        const rtcConfig = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
 
         const loadingScreen = document.getElementById("loadingScreen");
         const nameScreen = document.getElementById("nameScreen");
@@ -338,6 +346,11 @@
         let scriptData = { "Blox Fruit": [], "The Strongest Battlegrounds": [], "99 Nights in the Forest": [], "Game Khác": [] };
         let activeGame = "Blox Fruit";
         let spendingChartInstance = null;
+
+        function formatMoney(num) {
+            if (isNaN(num)) return "0đ";
+            return Number(num).toLocaleString('vi-VN') + "đ";
+        }
 
         function showCustomAlert(title, message) {
             document.getElementById('customModalTitle').innerText = title;
@@ -394,6 +407,7 @@
             initSpendingChart();
             listenGlobalScripts();
             listenPendingOrders();
+            listenApprovedOrders();
             prepareMicrophone();
         }
 
@@ -416,7 +430,6 @@
                 .catch(err => console.log("Lỗi micro:", err));
         }
 
-        // --- WEB-RTC P2P CALL LOGIC ---
         function initRealtimeListeners() {
             db.ref("users").on("value", (snapshot) => {
                 const listContainer = document.getElementById("friendListContainer");
@@ -437,13 +450,13 @@
                                 <span style="color: ${isOnline ? '#22c55e' : '#9ca3af'};">${userData.status || 'Offline'}</span>
                             </div>
                             <button class="callUserBtn" onclick="startCall('${username}')">📞 Gọi</button>
+                            ${isAdminLoggedIn ? `<button class="deleteUserBtn" onclick="deleteUser('${username}')">Xóa</button>` : ''}
                         </div>
                     `;
                     listContainer.appendChild(div);
                 });
             });
 
-            // Lắng nghe tín hiệu cuộc gọi WebRTC P2P
             db.ref("calls/" + currentUser).on("value", async (snapshot) => {
                 const data = snapshot.val();
                 if (!data) return;
@@ -464,22 +477,24 @@
                 }
             });
 
-            // Chat nhóm
             const chatList = document.getElementById("modalChatList");
-            db.ref("messages").limitToLast(40).on("child_added", (snapshot) => {
-                const data = snapshot.val();
-                chatHistoryForAI.push({ role: "user", content: `${data.sender}: ${data.text}` });
-                if(chatHistoryForAI.length > 25) chatHistoryForAI.shift();
+            db.ref("messages").on("value", (snapshot) => {
+                chatList.innerHTML = "";
+                chatHistoryForAI = [];
+                if (!snapshot.exists()) return;
 
-                const div = document.createElement("div");
-                div.className = (data.sender === "🤖 Trợ Lý AI") ? "msgRow ai-msg" : "msgRow";
-                div.innerHTML = `<b>${data.sender}:</b> ${data.text}`;
-                chatList.appendChild(div);
+                snapshot.forEach((child) => {
+                    const id = child.key;
+                    const data = child.val();
+                    chatHistoryForAI.push({ role: "user", content: `${data.sender}: ${data.text}` });
+                    if(chatHistoryForAI.length > 25) chatHistoryForAI.shift();
+
+                    const div = document.createElement("div");
+                    div.className = (data.sender === "🤖 Trợ Lý AI") ? "msgRow ai-msg" : "msgRow";
+                    div.innerHTML = `<div><b>${data.sender}:</b> ${data.text}</div>${isAdminLoggedIn ? `<button class="deleteMsgBtn" onclick="deleteMessage('${id}')">Xóa</button>` : ''}`;
+                    chatList.appendChild(div);
+                });
                 chatList.scrollTop = chatList.scrollHeight;
-
-                if (data.text === "thôi mày im được rồi") { aiActive = false; return; }
-                if (data.text === "ê AI") { aiActive = true; triggerAIResponse("Mọi người vừa gọi bạn lên."); }
-                else if (aiActive && data.sender !== "🤖 Trợ Lý AI") { triggerAIResponse(data.text); }
             });
         }
 
@@ -488,11 +503,8 @@
                 localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
             }
             peerConnection = new RTCPeerConnection(rtcConfig);
-
-            // Đưa mic của mình vào kết nối để truyền sang bên kia
             localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
 
-            // Nhận âm thanh từ bên kia truyền tới
             peerConnection.ontrack = (event) => {
                 const remoteAudio = document.getElementById("remoteAudio");
                 remoteAudio.srcObject = event.streams[0];
@@ -529,7 +541,6 @@
             openModal('callModal');
             document.getElementById("callStatusText").innerText = "Đang kết nối...";
 
-            // Lấy offer từ database của currentCallTarget (người gọi)
             db.ref("calls/" + currentUser).get().then(async (snapshot) => {
                 const data = snapshot.val();
                 if (!data || !data.offer) return;
@@ -589,7 +600,6 @@
             }
         }
 
-        // --- CÁC TÍNH NĂNG KHÁC (Script, Chat, Shop) ---
         function selectGame(gameName, btnElement) {
             activeGame = gameName;
             document.getElementById('currentCategory').innerText = "Danh sách Script: " + gameName;
@@ -619,7 +629,7 @@
             container.innerHTML = "";
             let list = scriptData[activeGame] || [];
             if(list.length === 0) {
-                container.innerHTML = `<p style="color: #64748b; text-align: center; font-size: 12px; padding: 10px;">Chưa có script nào.</p>`;
+                container.innerHTML = `<p style="color: #cbd5e1; text-align: center; font-size: 12px; padding: 10px;">Chưa có script nào.</p>`;
                 return;
             }
             list.forEach((item) => {
@@ -660,12 +670,38 @@
             spendingChartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['Tuần 1', 'Tuần 2', 'Tuần 3', 'Tuần 4'],
+                    labels: ['Ngày 1', 'Ngày 2', 'Ngày 3', 'Ngày 4'],
                     datasets: [{ label: 'Chi tiêu (VNĐ)', data: [0,0,0,0], borderColor: '#34d399', backgroundColor: 'rgba(52, 211, 153, 0.15)', borderWidth: 2.5, fill: true, tension: 0.3 }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#fff', font: { size: 10 } } } } }
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    plugins: { 
+                        legend: { labels: { color: '#fff', font: { size: 10 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Chi tiêu: ' + formatMoney(context.raw);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                color: '#fff',
+                                callback: function(value) {
+                                    return value.toLocaleString('vi-VN') + 'đ';
+                                }
+                            }
+                        },
+                        x: {
+                            ticks: { color: '#fff' }
+                        }
+                    }
+                }
             });
-            db.ref("spending_weeks").on("value", (snapshot) => {
+            db.ref("spending_days").on("value", (snapshot) => {
                 if(snapshot.exists()) {
                     let d = snapshot.val();
                     spendingChartInstance.data.labels = Object.keys(d);
@@ -679,6 +715,8 @@
             let time = document.getElementById("orderTimeInput").value.trim();
             let amount = parseFloat(document.getElementById("orderAmountInput").value);
             if(!time || isNaN(amount)) { showCustomAlert("Lỗi", "Nhập đủ thông tin đơn hàng!"); return; }
+            if(amount < 20000) { showCustomAlert("Lỗi số tiền", "Số tiền mua thẻ thấp nhất phải từ 20.000đ trở lên mới được tính!"); return; }
+            
             db.ref("orders").push({ user: currentUser, time: time, amount: amount, timestamp: Date.now() });
             document.getElementById("orderTimeInput").value = "";
             document.getElementById("orderAmountInput").value = "";
@@ -687,9 +725,12 @@
 
         function verifyAdmin() {
             if(document.getElementById("adminPassInput").value === "vu654321*") {
+                isAdminLoggedIn = true;
                 document.getElementById("adminLoginArea").style.display = "none";
                 document.getElementById("adminPanelContent").style.display = "flex";
-                showCustomAlert("Thành công", "Đã mở khóa bảng quản trị!");
+                showCustomAlert("Thành công", "Đã mở khóa toàn bộ quyền quản trị viên!");
+                // Refresh list bạn bè để hiện nút xóa user
+                db.ref("users").once("value", () => initRealtimeListeners());
             } else { showCustomAlert("Sai", "Sai mật khẩu quản trị!"); }
         }
 
@@ -700,8 +741,56 @@
                 if(!snapshot.exists()) { c.innerHTML = `<div style="font-size:11px; color:#888; text-align:center;">Chưa có đơn chờ</div>`; return; }
                 snapshot.forEach((child) => {
                     let id = child.key; let o = child.val();
-                    c.innerHTML += `<div class="pendingCard"><div><b>${o.user}</b>: ${o.time} - <b>${o.amount.toLocaleString()}đ</b></div><div class="adminActions"><button class="approveBtn" onclick="db.ref('spending_weeks/${o.time}').set({amount:${o.amount}}).then(()=>db.ref('orders/${id}').remove())">Duyệt</button><button class="rejectBtn" onclick="db.ref('orders/${id}').remove()">Hủy</button></div></div>`;
+                    c.innerHTML += `<div class="pendingCard"><div><b>${o.user}</b>: ${o.time} - <b>${formatMoney(o.amount)}</b></div><div class="adminActions"><button class="approveBtn" onclick="approveOrder('${id}', '${o.time}', ${o.amount})">Duyệt</button><button class="rejectBtn" onclick="db.ref('orders/${id}').remove()">Hủy</button></div></div>`;
                 });
+            });
+        }
+
+        function approveOrder(id, time, amount) {
+            db.ref('spending_days/' + time).set({ amount: amount }).then(() => {
+                db.ref('approved_orders/' + id).set({ time: time, amount: amount, timestamp: Date.now() });
+                db.ref('orders/' + id).remove();
+            });
+        }
+
+        function listenApprovedOrders() {
+            db.ref("approved_orders").on("value", (snapshot) => {
+                let c = document.getElementById("approvedListContainer");
+                if(!c) return;
+                c.innerHTML = "";
+                if(!snapshot.exists()) { c.innerHTML = `<div style="font-size:11px; color:#888; text-align:center;">Chưa có đơn đã duyệt</div>`; return; }
+                snapshot.forEach((child) => {
+                    let id = child.key; let o = child.val();
+                    c.innerHTML += `<div class="pendingCard"><div>${o.time} - <b>${formatMoney(o.amount)}</b></div><button class="deleteApprovedBtn" onclick="deleteApprovedOrder('${id}', '${o.time}')">Xóa</button></div>`;
+                });
+            });
+        }
+
+        function deleteApprovedOrder(id, time) {
+            if(!isAdminLoggedIn) { showCustomAlert("Cấm", "Cần đăng nhập quản trị viên!"); return; }
+            db.ref('spending_days/' + time).remove().then(() => {
+                db.ref('approved_orders/' + id).remove();
+                showCustomAlert("Đã xóa", "Đã xóa đơn và cập nhật lại biểu đồ!");
+            });
+        }
+
+        function deleteUser(username) {
+            if(!isAdminLoggedIn) { showCustomAlert("Cấm", "Cần đăng nhập quản trị viên!"); return; }
+            db.ref("users/" + username).remove().then(() => {
+                db.ref("calls/" + username).remove();
+                showCustomAlert("Thành công", `Đã xóa người dùng ${username}!`);
+            });
+        }
+
+        function deleteMessage(msgId) {
+            if(!isAdminLoggedIn) { showCustomAlert("Cấm", "Cần đăng nhập quản trị viên!"); return; }
+            db.ref("messages/" + msgId).remove();
+        }
+
+        function requestResetChat() {
+            if(!isAdminLoggedIn) { showCustomAlert("Cấm", "Cần đăng nhập quản trị viên bằng mật khẩu để reset chat!"); return; }
+            db.ref("messages").remove().then(() => {
+                showCustomAlert("Thành công", "Đã reset toàn bộ tin nhắn nhóm!");
             });
         }
 
