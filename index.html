@@ -64,8 +64,8 @@
         }
         .robloxButton:hover { background: rgba(255,255,255,0.25); border-color: #ff4f9a; }
         /* SCRIPT HUB ĐƯỢC DI CHUYỂN LÊN KHUNG TRÊN - KHÔNG ẢNH HƯỞNG CÁC NÚT KHÁC */
+        /* SCRIPT HUB - CHỈ ĐỔI HIỆU ỨNG MÀU, GIỮ NGUYÊN VỊ TRÍ/KÍCH THƯỚC/CHỨC NĂNG */
         #btnScriptHub {
-            /* Chỉ đổi vị trí: đưa Script Hub lên ngay trên hàng nút */
             position: absolute;
             left: 0;
             bottom: 144px;
@@ -73,8 +73,20 @@
             height: 44px;
             z-index: 30;
 
-            /* Giữ đúng kiểu màu của các nút Roblox */
-            background: linear-gradient(135deg, rgba(30, 30, 50, 0.6), rgba(60, 20, 40, 0.6));
+            /* Nền tối giống các nút khác + cầu vồng mờ chạy liên tục */
+            background: linear-gradient(
+                110deg,
+                rgba(15, 15, 25, 0.5),
+                rgba(255, 60, 120, 0.10),
+                rgba(255, 180, 40, 0.10),
+                rgba(80, 220, 130, 0.10),
+                rgba(40, 180, 255, 0.10),
+                rgba(150, 70, 255, 0.10),
+                rgba(15, 15, 25, 0.5)
+            );
+            background-size: 300% 100%;
+            animation: scriptHubRainbow 5s linear infinite;
+
             border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 12px;
             color: white;
@@ -84,10 +96,33 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(8px);
         }
+
+        /* 🌈 Cầu vồng lướt nhẹ từ trái sang phải */
+        @keyframes scriptHubRainbow {
+            0% {
+                background-position: 0% 50%;
+            }
+            100% {
+                background-position: 300% 50%;
+            }
+        }
+
         #btnScriptHub:hover {
-            background: rgba(255, 255, 255, 0.25);
+            background: linear-gradient(
+                110deg,
+                rgba(255, 255, 255, 0.18),
+                rgba(255, 80, 140, 0.16),
+                rgba(255, 190, 60, 0.16),
+                rgba(80, 230, 150, 0.16),
+                rgba(50, 190, 255, 0.16),
+                rgba(170, 80, 255, 0.16),
+                rgba(255, 255, 255, 0.18)
+            );
+            background-size: 300% 100%;
+            animation: scriptHubRainbow 3s linear infinite;
             border-color: #ff4f9a;
             color: #fff;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
         }
         #btnRobloxVNG { background: linear-gradient(135deg, rgba(30,30,50,0.6), rgba(60,20,40,0.6)); }
 
