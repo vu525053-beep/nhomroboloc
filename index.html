@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VUSCRIPT - Ultimate Edition</title>
+    <title>VUSCRIPT - Ultimate Audio Fixed Edition</title>
 
     <!-- Thư viện Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
@@ -110,8 +110,6 @@
         .chatMessagesBox { height: 220px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; text-align: left; backdrop-filter: blur(4px); }
         .msgRow { font-size: 12px; color: #e5e7eb; background: rgba(255,255,255,0.08); padding: 8px 12px; border-radius: 8px; word-break: break-word; line-height: 1.4; display: flex; justify-content: space-between; align-items: flex-start; }
         .msgRow b { color: #ff4f9a; }
-        .msgRow.ai-msg { background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.35); }
-        .msgRow.ai-msg b { color: #60a5fa; }
         .deleteMsgBtn { background: none; border: none; color: #ef4444; font-size: 12px; cursor: pointer; font-weight: bold; margin-left: 8px; display: none; }
         .msgRow:hover .deleteMsgBtn { display: inline-block; }
         .chatInputRow { display: flex; gap: 6px; }
@@ -343,6 +341,7 @@
         let localStream = null;
         let currentCallTarget = null;
         let isMuted = false;
+        let candidateQueue = [];
 
         const rtcConfig = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
 
@@ -442,10 +441,12 @@
             setTimeout(() => modal.style.display = "none", 300);
         }
 
-        function prepareMicrophone() {
-            navigator.mediaDevices.getUserMedia({ audio: true, video: false })
-                .then(stream => { localStream = stream; })
-                .catch(err => console.log("Lỗi micro:", err));
+        async function prepareMicrophone() {
+            try {
+                localStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true }, video: false });
+            } catch (err) {
+                console.log("Lỗi micro:", err);
+            }
         }
 
         function initRealtimeListeners() {
@@ -485,10 +486,18 @@
                     document.getElementById("incomingModal").style.display = "flex";
                 }
                 else if (data.type === "answer" && peerConnection) {
-                    await peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
+                    if (peerConnection.signalingState !== "stable") {
+                        await peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
+                        processCandidateQueue();
+                    }
                 }
-                else if (data.type === "candidate" && peerConnection && data.candidate) {
-                    try { await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate)); } catch(e){}
+                else if (data.type === "candidate" && data.candidate) {
+                    const candidateObj = new RTCIceCandidate(data.candidate);
+                    if (peerConnection && peerConnection.remoteDescription && peerConnection.remoteDescription.type) {
+                        try { await peerConnection.addIceCandidate(candidateObj); } catch(e){}
+                    } else {
+                        candidateQueue.push(candidateObj);
+                    }
                 }
                 else if (data.type === "hangup") {
                     endCallQuiet();
@@ -518,10 +527,14 @@
 
         async function createPeerConnection(targetUser) {
             if (!localStream) {
-                localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+                await prepareMicrophone();
             }
             peerConnection = new RTCPeerConnection(rtcConfig);
-            localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+            candidateQueue = [];
+
+            if (localStream) {
+                localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+            }
 
             peerConnection.ontrack = (event) => {
                 const remoteAudio = document.getElementById("remoteAudio");
@@ -535,6 +548,13 @@
                     db.ref("calls/" + targetUser).update({ type: "candidate", candidate: event.candidate.toJSON(), sender: currentUser });
                 }
             };
+        }
+
+        async function processCandidateQueue() {
+            while (candidateQueue.length > 0) {
+                const candidate = candidateQueue.shift();
+                try { await peerConnection.addIceCandidate(candidate); } catch(e){}
+            }
         }
 
         async function startCall(targetUser) {
@@ -567,6 +587,8 @@
                 await createPeerConnection(currentCallTarget);
 
                 await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
+                processCandidateQueue();
+
                 const answer = await peerConnection.createAnswer();
                 await peerConnection.setLocalDescription(answer);
 
@@ -601,6 +623,7 @@
             }
             db.ref("calls/" + currentUser).remove();
             currentCallTarget = null;
+            candidateQueue = [];
         }
 
         function toggleMute() {
