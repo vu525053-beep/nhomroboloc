@@ -480,10 +480,10 @@
         let isMuted = false;
         let isCamOn = false;
 
-        // Biến bổ sung cho WebRTC gọi điện trực tiếp
-        let peerConnection = null;
+        // Biến xử lý truyền tải âm thanh qua Firebase Database
         let localAudioStream = null;
-        const rtcConfig = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+        let audioRecorder = null;
+        let audioChunks = [];
 
         let spendingChartInstance = null;
 
@@ -803,8 +803,10 @@
 
         function setupAudioStream() {
             navigator.mediaDevices.getUserMedia({ audio: true, video: false })
-                .then(stream => { localAudioStream = stream; })
-                .catch(err => console.log("Không thể bật micro mặc định:", err));
+                .then(stream => { 
+                    localAudioStream = stream; 
+                })
+                .catch(err => console.log("Không thể bật micro:", err));
         }
 
         function initRealtimeListeners() {
@@ -833,8 +835,8 @@
                 });
             });
 
-            // Lắng nghe cuộc gọi đến (Ringing / Offer / ICE)
-            db.ref("calls/" + currentUser).on("value", async (snapshot) => {
+            // Lắng nghe cuộc gọi đến qua Firebase Cloud
+            db.ref("calls/" + currentUser).on("value", (snapshot) => {
                 const callData = snapshot.val();
                 const incomingModal = document.getElementById("incomingModal");
 
@@ -851,25 +853,20 @@
                 } 
                 else if (callData.status === "connected") {
                     incomingModal.style.display = "none";
-                    document.getElementById("callStatusText").innerText = `Đã kết nối trực tiếp với ${currentCallTarget}!`;
+                    document.getElementById("callStatusText").innerText = `Đã kết nối thoại thành công với ${currentCallTarget}!`;
                 }
                 else if (callData.status === "ended") {
                     incomingModal.style.display = "none";
                     endCallQuiet();
                 }
+            });
 
-                // Xử lý tín hiệu WebRTC Offer / Answer / ICE Candidate qua Firebase
-                if (callData.offer && !peerConnection && callData.status === "calling_process") {
-                    currentCallTarget = callData.caller;
-                    await handleIncomingOffer(callData.offer);
-                }
-                if (callData.answer && peerConnection && peerConnection.signalingState === "have-local-offer") {
-                    await peerConnection.setRemoteDescription(new RTCSessionDescription(callData.answer));
-                }
-                if (callData.candidate && peerConnection) {
-                    try {
-                        await peerConnection.addIceCandidate(new RTCIceCandidate(callData.candidate));
-                    } catch(e) {}
+            // Lắng nghe dữ liệu giọng nói truyền qua Firebase
+            db.ref("voice_stream/" + currentUser).on("value", (snapshot) => {
+                const audioBase64 = snapshot.val();
+                if (audioBase64 && !isMuted) {
+                    const audio = new Audio(audioBase64);
+                    audio.play().catch(e => {});
                 }
             });
 
@@ -905,74 +902,54 @@
             });
         }
 
-        async function startCallUser(targetUser) {
+        function startCallUser(targetUser) {
             currentCallTarget = targetUser;
             activeCallId = "call_" + Date.now();
 
             openModal('callModal');
             document.getElementById("callStatusText").innerText = `Đang gọi cho ${targetUser}... Chờ bắt máy...`;
 
-            // Khởi tạo WebRTC PeerConnection
-            peerConnection = new RTCPeerConnection(rtcConfig);
-            
-            if (localAudioStream) {
-                localAudioStream.getTracks().forEach(track => peerConnection.addTrack(track, localAudioStream));
-            }
-
-            peerConnection.ontrack = (event) => {
-                document.getElementById("remoteAudio").srcObject = event.streams[0];
-            };
-
-            peerConnection.onicecandidate = (event) => {
-                if (event.candidate) {
-                    db.ref("calls/" + targetUser).update({ candidate: JSON.parse(JSON.stringify(event.candidate)) });
-                }
-            };
-
-            const offer = await peerConnection.createOffer();
-            await peerConnection.setLocalDescription(offer);
-
             db.ref("calls/" + targetUser).set({
                 caller: currentUser,
                 callId: activeCallId,
-                status: "ringing",
-                offer: JSON.parse(JSON.stringify(offer))
+                status: "ringing"
             });
         }
 
-        async function acceptIncomingCall() {
+        function acceptIncomingCall() {
             document.getElementById("incomingModal").style.display = "none";
             openModal('callModal');
-            document.getElementById("callStatusText").innerText = `Đang kết nối với ${currentCallTarget}...`;
+            document.getElementById("callStatusText").innerText = `Đã kết nối với ${currentCallTarget}! Bắt đầu nói chuyện được rồi.`;
 
             db.ref("calls/" + currentUser).update({ status: "connected" });
+            startVoiceBroadcasting();
         }
 
-        async function handleIncomingOffer(offer) {
-            peerConnection = new RTCPeerConnection(rtcConfig);
-
-            if (localAudioStream) {
-                localAudioStream.getTracks().forEach(track => peerConnection.addTrack(track, localAudioStream));
+        function startVoiceBroadcasting() {
+            if (!localAudioStream) {
+                navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then(stream => {
+                    localAudioStream = stream;
+                    setupRecorder();
+                }).catch(e => showCustomAlert("Lỗi", "Chưa cấp quyền Micro!"));
+            } else {
+                setupRecorder();
             }
+        }
 
-            peerConnection.ontrack = (event) => {
-                document.getElementById("remoteAudio").srcObject = event.streams[0];
-            };
-
-            peerConnection.onicecandidate = (event) => {
-                if (event.candidate) {
-                    db.ref("calls/" + currentCallTarget).update({ candidate: JSON.parse(JSON.stringify(event.candidate)) });
-                }
-            };
-
-            await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
-            const answer = await peerConnection.createAnswer();
-            await peerConnection.setLocalDescription(answer);
-
-            db.ref("calls/" + currentCallTarget).update({
-                answer: JSON.parse(JSON.stringify(answer)),
-                status: "calling_process"
-            });
+        function setupRecorder() {
+            try {
+                audioRecorder = new MediaRecorder(localAudioStream);
+                audioRecorder.ondataavailable = (e) => {
+                    if (e.data.size > 0 && currentCallTarget && !isMuted) {
+                        const reader = new FileReader();
+                        reader.readAsDataURL(e.data);
+                        reader.onloadend = () => {
+                            db.ref("voice_stream/" + currentCallTarget).set(reader.result);
+                        };
+                    }
+                };
+                audioRecorder.start(300); // Gửi gói tin âm thanh mỗi 300ms
+            } catch(e) {}
         }
 
         function rejectIncomingCall() {
@@ -987,6 +964,10 @@
             closeModal('callModal');
             document.getElementById("incomingModal").style.display = "none";
 
+            if (audioRecorder && audioRecorder.state !== "inactive") {
+                audioRecorder.stop();
+            }
+
             if (mediaStream) {
                 mediaStream.getTracks().forEach(track => track.stop());
                 mediaStream = null;
@@ -996,27 +977,23 @@
             document.getElementById("videoPlaceholder").style.display = "flex";
             document.getElementById("camBtn").innerText = "Bật Cam";
 
-            if (peerConnection) {
-                peerConnection.close();
-                peerConnection = null;
-            }
-
             if (currentCallTarget) {
                 db.ref("calls/" + currentCallTarget).update({ status: "ended" });
+                db.ref("voice_stream/" + currentCallTarget).remove();
             }
             db.ref("calls/" + currentUser).remove();
+            db.ref("voice_stream/" + currentUser).remove();
             currentCallTarget = null;
         }
 
         function endCallQuiet() {
             closeModal('callModal');
+            if (audioRecorder && audioRecorder.state !== "inactive") {
+                audioRecorder.stop();
+            }
             if (mediaStream) {
                 mediaStream.getTracks().forEach(track => track.stop());
                 mediaStream = null;
-            }
-            if (peerConnection) {
-                peerConnection.close();
-                peerConnection = null;
             }
             currentCallTarget = null;
         }
@@ -1031,7 +1008,8 @@
             if (isMuted) {
                 btn.innerText = "Bật Mic"; btn.style.background = "#22c55e"; statusText.innerText = "Bạn đã tắt mic";
             } else {
-                btn.innerText = "Tắt Mic"; btn.style.background = "#374151"; statusText.innerText = "Đang kết nối trực tiếp...";
+                btn.innerText = "Tắt Mic"; btn.style.background = "#374151"; statusText.innerText = "Đang kết nối thoại...";
+                if(currentCallTarget && !audioRecorder) startVoiceBroadcasting();
             }
         }
 
@@ -1043,14 +1021,14 @@
 
             if (isCamOn) {
                 try {
-                    mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                    mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
                     videoElem.srcObject = mediaStream;
                     videoElem.style.display = "block";
                     placeholder.style.display = "none";
                     camBtn.innerText = "Tắt Cam";
                     camBtn.style.background = "#ef4444";
                 } catch (err) {
-                    showCustomAlert("Lỗi Camera", "Không thể mở camera (Hãy cấp quyền camera cho trình duyệt)");
+                    showCustomAlert("Lỗi Camera", "Không thể mở camera");
                     isCamOn = false;
                 }
             } else {
@@ -1128,6 +1106,7 @@
             if (currentUser) {
                 db.ref("users/" + currentUser).update({ status: "Offline" });
                 db.ref("calls/" + currentUser).remove();
+                db.ref("voice_stream/" + currentUser).remove();
             }
         });
 
