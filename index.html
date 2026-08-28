@@ -63,8 +63,9 @@
             width: 100%; height: 44px; border: 1px solid rgba(255,255,255,0.3); border-radius: 12px; background: rgba(15, 15, 25, 0.5); color: white; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.25s; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); backdrop-filter: blur(8px);
         }
         .robloxButton:hover { background: rgba(255,255,255,0.25); border-color: #ff4f9a; }
-        /* SCRIPT HUB: chỉ đổi vị trí, giữ nguyên kích thước/chức năng */
+        /* SCRIPT HUB ĐƯỢC DI CHUYỂN LÊN KHUNG TRÊN - KHÔNG ẢNH HƯỞNG CÁC NÚT KHÁC */
         #btnScriptHub {
+            /* Chỉ đổi vị trí: đưa Script Hub lên ngay trên hàng nút */
             position: absolute;
             left: 0;
             bottom: 144px;
@@ -72,22 +73,21 @@
             height: 44px;
             z-index: 30;
 
-            /* Màu giống các nút Roblox bên dưới */
-            background: rgba(15, 15, 25, 0.5);
-            border: 1px solid rgba(255,255,255,0.3);
+            /* Giữ đúng kiểu màu của các nút Roblox */
+            background: linear-gradient(135deg, rgba(30, 30, 50, 0.6), rgba(60, 20, 40, 0.6));
+            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 12px;
             color: white;
             font-size: 13px;
             font-weight: bold;
             letter-spacing: normal;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(8px);
         }
         #btnScriptHub:hover {
-            background: rgba(255,255,255,0.25);
+            background: rgba(255, 255, 255, 0.25);
             border-color: #ff4f9a;
             color: #fff;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
         #btnRobloxVNG { background: linear-gradient(135deg, rgba(30,30,50,0.6), rgba(60,20,40,0.6)); }
 
