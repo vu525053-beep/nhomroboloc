@@ -218,7 +218,7 @@
     <!-- CHÁT NHÓM -->
     <div id="chatModal" class="modalBox">
         <div class="modalHeader">
-            <span>💬 Chat Nhóm Chung (AI ngầm)</span>
+            <span>💬 Chat Nhóm Chung</span>
             <div class="chatHeaderActions">
                 <button class="resetChatBtn" onclick="requestResetChat()">Reset Chat</button>
                 <button class="closeModal" onclick="closeModal('chatModal')">×</button>
@@ -337,7 +337,6 @@
 
         let currentUser = localStorage.getItem("vuscript_name");
         let isAdminLoggedIn = false;
-        let aiActive = false;
         let chatHistoryForAI = [];
 
         let peerConnection = null;
@@ -509,7 +508,7 @@
                     if(chatHistoryForAI.length > 25) chatHistoryForAI.shift();
 
                     const div = document.createElement("div");
-                    div.className = (data.sender === "🤖 Trợ Lý AI") ? "msgRow ai-msg" : "msgRow";
+                    div.className = "msgRow";
                     div.innerHTML = `<div><b>${data.sender}:</b> ${data.text}</div>${isAdminLoggedIn ? `<button class="deleteMsgBtn" onclick="deleteMessage('${id}')">Xóa</button>` : ''}`;
                     chatList.appendChild(div);
                 });
