@@ -72,7 +72,7 @@
         .modalHeader { display: flex; justify-content: space-between; align-items: center; color: #fff; font-size: 15px; font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.12); padding-bottom: 8px; }
         .closeModal { background: none; border: none; color: #ff4f9a; font-size: 18px; cursor: pointer; font-weight: bold; }
 
-        /* STYLING RIÊNG CHO SCRIPT HUB (ĐÃ PHÓNG TO NGANG BẰNG NÚT MỞ ROBLOX - 410PX) */
+        /* STYLING RIÊNG CHO SCRIPT HUB */
         #scriptHubModal {
             width: 410px !important;
             border: 2px solid rgba(56, 189, 248, 0.6);
@@ -80,7 +80,6 @@
         }
         .scriptHubContainer { max-height: 440px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 2px; }
         
-        /* PHẦN ĐẦU SCRIPT HUB SIÊU ĐẸP & RỘNG NGANG */
         .script-hub-top-banner {
             width: 100%;
             background: linear-gradient(135deg, rgba(2, 132, 199, 0.3), rgba(147, 51, 234, 0.3));
@@ -267,7 +266,7 @@
         .btnReject { background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 12px; font-weight: bold; cursor: pointer; }
         .btnReject:hover { background: #dc2626; }
 
-        /* MODAL CUSTOM ĐẸP MẮT (THAY THẾ ALERT) */
+        /* MODAL CUSTOM ĐẸP MẮT */
         #customModalBox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); justify-content: center; align-items: center; z-index: 500; backdrop-filter: blur(4px); }
         .custom-modal-content { background: #1e293b; padding: 20px; border-radius: 14px; width: 90%; max-width: 320px; text-align: center; border: 1px solid #475569; box-shadow: 0 15px 30px rgba(0,0,0,0.5); animation: scaleUp 0.2s ease; }
         @keyframes scaleUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -314,7 +313,7 @@
         <div class="incomingBox">
             <div class="incomingAvatar">📞</div>
             <div>
-                <div style="font-size: 14px; color: #9ca3af;">Menu có người gọi cho bạn</div>
+                <div style="font-size: 14px; color: #9ca3af;">Có cuộc gọi đến cho bạn</div>
                 <div id="callerNameText" style="font-size: 18px; font-weight: bold; color: #ff4f9a; margin-top: 4px;">Đại vương</div>
             </div>
             <div class="incomingButtons">
@@ -346,20 +345,18 @@
         </div>
     </div>
 
-    <!-- BẢNG SCRIPT HUB (ĐÃ ĐƯA LÊN ĐẦU, BỰ BẰNG MỞ ROBLOX, CHIA SẺ TOÀN NHÓM) -->
+    <!-- BẢNG SCRIPT HUB -->
     <div id="scriptHubModal" class="modalBox">
         <div class="modalHeader">
             <span>⚡ VIP Script Hub Đỉnh Cao</span>
             <button class="closeModal" onclick="closeModal('scriptHubModal')">×</button>
         </div>
         <div class="scriptHubContainer">
-            <!-- BANNER PHẦN ĐẦU SIÊU BỰ NGANG BẰNG NÚT MỞ ROBLOX -->
             <div class="script-hub-top-banner">
                 <div class="script-hub-banner-title">⚡ VUSCRIPT HUB ⚡</div>
                 <div class="script-hub-banner-desc">Chọn tựa game yêu thích và nhận mã loadstring tối ưu nhất cho cả nhóm!</div>
             </div>
 
-            <!-- Danh sách Game -->
             <div class="game-list">
                 <button class="game-btn active" onclick="selectGame('Blox Fruit', this)">🏴‍☠️ Blox Fruit</button>
                 <button class="game-btn" onclick="selectGame('The Strongest Battlegrounds', this)">⚔️ The Strongest TSB</button>
@@ -369,10 +366,8 @@
 
             <div class="section-title" id="currentCategory">Danh sách Script: Blox Fruit</div>
             
-            <!-- Khung chứa danh sách script -->
             <div id="scriptContainer"></div>
 
-            <!-- Khung gửi script đóng góp -->
             <div class="contrib-box">
                 <h3>➕ Đóng góp Script của bạn (Hiển thị cho toàn nhóm)</h3>
                 <input type="text" id="contribName" class="input-field-hub" placeholder="Tên script hoặc ghi chú (VD: Auto Farm VIP)...">
@@ -391,6 +386,7 @@
         <div class="callScreenBody">
             <div class="videoContainer">
                 <video id="webcamVideo" autoplay playsinline muted></video>
+                <audio id="remoteAudio" autoplay></audio>
                 <div class="videoPlaceholder" id="videoPlaceholder">
                     <div class="callAvatarPulse">🎙️</div>
                     <span id="callStatusText">Đang kết nối vào phòng thoại...</span>
@@ -411,12 +407,10 @@
             <button class="closeModal" onclick="closeModal('shopModal')">×</button>
         </div>
         <div class="shopContainer">
-            <!-- BIỂU ĐỒ ĐỘNG -->
             <div class="chartBox">
                 <canvas id="spendingChart"></canvas>
             </div>
 
-            <!-- TẠO ĐƠN MUA THẺ / NẠP TIỀN -->
             <div class="orderFormBox">
                 <div class="orderFormTitle">📦 Tạo Đơn Mua Thẻ Mới</div>
                 <div class="formRow">
@@ -428,7 +422,6 @@
                 </div>
             </div>
 
-            <!-- KHU VỰC QUẢN TRỊ VIÊN CHUNG -->
             <div class="adminSection">
                 <div class="adminHeader">
                     <span class="adminTitle">🔒 Quyền Quản Trị Viên Chung</span>
@@ -447,7 +440,7 @@
         </div>
     </div>
 
-    <!-- HỘP THOẠI THÔNG BÁO TÙY CHỈNH (MODAL ĐẸP MẮT) -->
+    <!-- HỘP THOẠI THÔNG BÁO TÙY CHỈNH -->
     <div id="customModalBox">
         <div class="custom-modal-content">
             <div class="custom-modal-title" id="customModalTitle">Thông báo</div>
@@ -486,6 +479,11 @@
         let mediaStream = null;
         let isMuted = false;
         let isCamOn = false;
+
+        // Biến bổ sung cho WebRTC gọi điện trực tiếp
+        let peerConnection = null;
+        let localAudioStream = null;
+        const rtcConfig = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
 
         let spendingChartInstance = null;
 
@@ -572,6 +570,7 @@
             initSpendingChart();
             listenGlobalScripts();
             listenPendingOrders();
+            setupAudioStream();
         }
 
         function openModal(modalId) {
@@ -802,6 +801,12 @@
             showCustomAlert("Đã hủy", "Đã từ chối đơn hàng.");
         }
 
+        function setupAudioStream() {
+            navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+                .then(stream => { localAudioStream = stream; })
+                .catch(err => console.log("Không thể bật micro mặc định:", err));
+        }
+
         function initRealtimeListeners() {
             db.ref("users").on("value", (snapshot) => {
                 const listContainer = document.getElementById("friendListContainer");
@@ -828,17 +833,43 @@
                 });
             });
 
-            db.ref("calls/" + currentUser).on("value", (snapshot) => {
+            // Lắng nghe cuộc gọi đến (Ringing / Offer / ICE)
+            db.ref("calls/" + currentUser).on("value", async (snapshot) => {
                 const callData = snapshot.val();
                 const incomingModal = document.getElementById("incomingModal");
 
-                if (callData && callData.status === "ringing") {
+                if (!callData) {
+                    incomingModal.style.display = "none";
+                    return;
+                }
+
+                if (callData.status === "ringing") {
                     currentCallTarget = callData.caller;
                     activeCallId = callData.callId;
                     document.getElementById("callerNameText").innerText = currentCallTarget + " đang gọi cho bạn";
                     incomingModal.style.display = "flex";
-                } else if (!callData || callData.status === "ended") {
+                } 
+                else if (callData.status === "connected") {
                     incomingModal.style.display = "none";
+                    document.getElementById("callStatusText").innerText = `Đã kết nối trực tiếp với ${currentCallTarget}!`;
+                }
+                else if (callData.status === "ended") {
+                    incomingModal.style.display = "none";
+                    endCallQuiet();
+                }
+
+                // Xử lý tín hiệu WebRTC Offer / Answer / ICE Candidate qua Firebase
+                if (callData.offer && !peerConnection && callData.status === "calling_process") {
+                    currentCallTarget = callData.caller;
+                    await handleIncomingOffer(callData.offer);
+                }
+                if (callData.answer && peerConnection && peerConnection.signalingState === "have-local-offer") {
+                    await peerConnection.setRemoteDescription(new RTCSessionDescription(callData.answer));
+                }
+                if (callData.candidate && peerConnection) {
+                    try {
+                        await peerConnection.addIceCandidate(new RTCIceCandidate(callData.candidate));
+                    } catch(e) {}
                 }
             });
 
@@ -874,32 +905,81 @@
             });
         }
 
-        function startCallUser(targetUser) {
-            const callId = "call_" + Date.now();
-            activeCallId = callId;
+        async function startCallUser(targetUser) {
             currentCallTarget = targetUser;
-
-            db.ref("calls/" + targetUser).set({
-                caller: currentUser,
-                callId: callId,
-                status: "ringing"
-            });
+            activeCallId = "call_" + Date.now();
 
             openModal('callModal');
             document.getElementById("callStatusText").innerText = `Đang gọi cho ${targetUser}... Chờ bắt máy...`;
+
+            // Khởi tạo WebRTC PeerConnection
+            peerConnection = new RTCPeerConnection(rtcConfig);
+            
+            if (localAudioStream) {
+                localAudioStream.getTracks().forEach(track => peerConnection.addTrack(track, localAudioStream));
+            }
+
+            peerConnection.ontrack = (event) => {
+                document.getElementById("remoteAudio").srcObject = event.streams[0];
+            };
+
+            peerConnection.onicecandidate = (event) => {
+                if (event.candidate) {
+                    db.ref("calls/" + targetUser).update({ candidate: JSON.parse(JSON.stringify(event.candidate)) });
+                }
+            };
+
+            const offer = await peerConnection.createOffer();
+            await peerConnection.setLocalDescription(offer);
+
+            db.ref("calls/" + targetUser).set({
+                caller: currentUser,
+                callId: activeCallId,
+                status: "ringing",
+                offer: JSON.parse(JSON.stringify(offer))
+            });
         }
 
-        function acceptIncomingCall() {
+        async function acceptIncomingCall() {
             document.getElementById("incomingModal").style.display = "none";
+            openModal('callModal');
+            document.getElementById("callStatusText").innerText = `Đang kết nối với ${currentCallTarget}...`;
 
             db.ref("calls/" + currentUser).update({ status: "connected" });
-            
-            openModal('callModal');
-            document.getElementById("callStatusText").innerText = `Đã kết nối với ${currentCallTarget}!`;
+        }
+
+        async function handleIncomingOffer(offer) {
+            peerConnection = new RTCPeerConnection(rtcConfig);
+
+            if (localAudioStream) {
+                localAudioStream.getTracks().forEach(track => peerConnection.addTrack(track, localAudioStream));
+            }
+
+            peerConnection.ontrack = (event) => {
+                document.getElementById("remoteAudio").srcObject = event.streams[0];
+            };
+
+            peerConnection.onicecandidate = (event) => {
+                if (event.candidate) {
+                    db.ref("calls/" + currentCallTarget).update({ candidate: JSON.parse(JSON.stringify(event.candidate)) });
+                }
+            };
+
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+            const answer = await peerConnection.createAnswer();
+            await peerConnection.setLocalDescription(answer);
+
+            db.ref("calls/" + currentCallTarget).update({
+                answer: JSON.parse(JSON.stringify(answer)),
+                status: "calling_process"
+            });
         }
 
         function rejectIncomingCall() {
             document.getElementById("incomingModal").style.display = "none";
+            if(currentCallTarget) {
+                db.ref("calls/" + currentCallTarget).update({ status: "ended" });
+            }
             db.ref("calls/" + currentUser).remove();
         }
 
@@ -916,10 +996,28 @@
             document.getElementById("videoPlaceholder").style.display = "flex";
             document.getElementById("camBtn").innerText = "Bật Cam";
 
+            if (peerConnection) {
+                peerConnection.close();
+                peerConnection = null;
+            }
+
             if (currentCallTarget) {
-                db.ref("calls/" + currentCallTarget).remove();
+                db.ref("calls/" + currentCallTarget).update({ status: "ended" });
             }
             db.ref("calls/" + currentUser).remove();
+            currentCallTarget = null;
+        }
+
+        function endCallQuiet() {
+            closeModal('callModal');
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+                mediaStream = null;
+            }
+            if (peerConnection) {
+                peerConnection.close();
+                peerConnection = null;
+            }
             currentCallTarget = null;
         }
 
@@ -927,13 +1025,13 @@
             isMuted = !isMuted;
             const btn = document.getElementById("muteBtn");
             const statusText = document.getElementById("callStatusText");
-            if (mediaStream) {
-                mediaStream.getAudioTracks().forEach(track => track.enabled = !isMuted);
+            if (localAudioStream) {
+                localAudioStream.getAudioTracks().forEach(track => track.enabled = !isMuted);
             }
             if (isMuted) {
                 btn.innerText = "Bật Mic"; btn.style.background = "#22c55e"; statusText.innerText = "Bạn đã tắt mic";
             } else {
-                btn.innerText = "Tắt Mic"; btn.style.background = "#374151"; statusText.innerText = "Đang kết nối...";
+                btn.innerText = "Tắt Mic"; btn.style.background = "#374151"; statusText.innerText = "Đang kết nối trực tiếp...";
             }
         }
 
@@ -1038,4 +1136,3 @@
     </script>
 </body>
 </html>
-```[cite: 3]
