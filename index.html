@@ -65,6 +65,7 @@
         .robloxButton:hover { background: rgba(255,255,255,0.25); border-color: #ff4f9a; }
         /* SCRIPT HUB ĐƯỢC DI CHUYỂN LÊN KHUNG TRÊN - KHÔNG ẢNH HƯỞNG CÁC NÚT KHÁC */
         /* SCRIPT HUB - CHỈ ĐỔI HIỆU ỨNG MÀU, GIỮ NGUYÊN VỊ TRÍ/KÍCH THƯỚC/CHỨC NĂNG */
+        /* SCRIPT HUB - CẦU VỒNG ĐẬM, CHẠY NHANH */
         #btnScriptHub {
             position: absolute;
             left: 0;
@@ -73,56 +74,98 @@
             height: 44px;
             z-index: 30;
 
-            /* Nền tối giống các nút khác + cầu vồng mờ chạy liên tục */
+            /* Nền tối + gradient cầu vồng nhìn rõ */
             background: linear-gradient(
                 110deg,
-                rgba(15, 15, 25, 0.5),
-                rgba(255, 60, 120, 0.10),
-                rgba(255, 180, 40, 0.10),
-                rgba(80, 220, 130, 0.10),
-                rgba(40, 180, 255, 0.10),
-                rgba(150, 70, 255, 0.10),
-                rgba(15, 15, 25, 0.5)
+                rgba(255, 0, 90, 0.42),
+                rgba(255, 140, 0, 0.42),
+                rgba(255, 235, 0, 0.38),
+                rgba(0, 230, 120, 0.42),
+                rgba(0, 190, 255, 0.45),
+                rgba(90, 70, 255, 0.45),
+                rgba(220, 0, 255, 0.42),
+                rgba(255, 0, 90, 0.42)
             );
-            background-size: 300% 100%;
-            animation: scriptHubRainbow 5s linear infinite;
+            background-size: 250% 100%;
+            animation: scriptHubRainbow 1.8s linear infinite;
 
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255,255,255,0.45);
             border-radius: 12px;
-            color: white;
+            color: #fff;
             font-size: 13px;
             font-weight: bold;
             letter-spacing: normal;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+
+            box-shadow:
+                0 4px 15px rgba(0,0,0,0.3),
+                0 0 18px rgba(255, 0, 200, 0.28);
+
             backdrop-filter: blur(8px);
+            overflow: hidden;
         }
 
-        /* 🌈 Cầu vồng lướt nhẹ từ trái sang phải */
+        /* 🌈 Vệt cầu vồng sáng chạy nhanh ngang qua nút */
+        #btnScriptHub::before {
+            content: "";
+            position: absolute;
+            top: -35%;
+            left: -80%;
+            width: 65%;
+            height: 170%;
+            transform: skewX(-20deg);
+
+            background: linear-gradient(
+                90deg,
+                transparent 0%,
+                rgba(255, 0, 80, 0.15) 15%,
+                rgba(255, 180, 0, 0.42) 30%,
+                rgba(255, 255, 255, 0.52) 42%,
+                rgba(0, 240, 255, 0.42) 58%,
+                rgba(150, 0, 255, 0.42) 75%,
+                transparent 100%
+            );
+
+            filter: blur(7px);
+            animation: scriptHubRainbowSweep 1.25s linear infinite;
+            pointer-events: none;
+        }
+
+        /* Ánh sáng mềm phủ toàn nút */
+        #btnScriptHub::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                90deg,
+                rgba(255,0,100,0.12),
+                rgba(255,190,0,0.10),
+                rgba(0,255,160,0.10),
+                rgba(0,180,255,0.12),
+                rgba(180,0,255,0.12)
+            );
+            background-size: 250% 100%;
+            animation: scriptHubRainbow 1.8s linear infinite reverse;
+            pointer-events: none;
+        }
+
         @keyframes scriptHubRainbow {
-            0% {
-                background-position: 0% 50%;
-            }
-            100% {
-                background-position: 300% 50%;
-            }
+            0%   { background-position: 0% 50%; }
+            100% { background-position: 250% 50%; }
+        }
+
+        @keyframes scriptHubRainbowSweep {
+            0%   { left: -80%; opacity: 0; }
+            10%  { opacity: 1; }
+            90%  { opacity: 1; }
+            100% { left: 120%; opacity: 0; }
         }
 
         #btnScriptHub:hover {
-            background: linear-gradient(
-                110deg,
-                rgba(255, 255, 255, 0.18),
-                rgba(255, 80, 140, 0.16),
-                rgba(255, 190, 60, 0.16),
-                rgba(80, 230, 150, 0.16),
-                rgba(50, 190, 255, 0.16),
-                rgba(170, 80, 255, 0.16),
-                rgba(255, 255, 255, 0.18)
-            );
-            background-size: 300% 100%;
-            animation: scriptHubRainbow 3s linear infinite;
-            border-color: #ff4f9a;
+            border-color: #fff;
             color: #fff;
-            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+            box-shadow:
+                0 4px 18px rgba(0,0,0,0.35),
+                0 0 25px rgba(255, 0, 200, 0.45);
         }
         #btnRobloxVNG { background: linear-gradient(135deg, rgba(30,30,50,0.6), rgba(60,20,40,0.6)); }
 
